@@ -1,19 +1,70 @@
 #include "word_count.h"
 
+#include <iostream>
+#include <cctype>
+#include <cassert>
+#include <array>
+
 namespace word_count	{
+
+	const char APOS_CHAR	= '\'';
+	const char NULL_CHAR	= '\0';
+
+	bool is_char_allowed(const char c)	{
+		if(std::isalnum(c))	{
+			return true;
+		}
+	}
+
+	bool is_apostrophes_allowed(const std::array<char, 3>& str)	{
+		assert(str.size() == 3);//Only prev, ', post chars needed
+		assert(str[1] == APOS_CHAR);
+		if(std::isalpha(str[0])
+			&& std::isalpha(str[2]))	{
+			return true;
+		}
+		return false;
+	}
+
 	const dict_t words(const std::string& str)	{
 		dict_t wc;
-		//wc[str]	= 1;
-        auto word       = std::string("");
-        char space_ch   = ' ';
-        auto begin_pos  = 0;
-        auto pos_space  = str.find(space_ch);
-        while(pos_space != std::string::npos)   {
-            word        = str.substr(begin_pos, pos_space - begin_pos);
-            ++wc[word];
-            begin_pos   = pos_space + 1;// Even if this results in npos, it is OK
-            pos_space   = str.find(space_ch, pos_space);// This result guarantees that begin_pos remain valid at all times
-        }
+		std::string word("");
+		std::array<char, 3> apos_ctx{ NULL_CHAR, APOS_CHAR, NULL_CHAR };
+		auto prev_c	= NULL_CHAR;
+		bool in_apos_ctx	= false;
+
+		for(auto c : str)	{
+			if(in_apos_ctx)	{
+				apos_ctx[2]	= c;
+				if(is_apostrophes_allowed(apos_ctx))	{
+					word.append(apos_ctx.data() + 1, 2);
+				}
+				in_apos_ctx	= false;
+			}
+			else if(c == APOS_CHAR)	{
+				apos_ctx[0]	= prev_c;
+				in_apos_ctx	= true;
+			}
+			else if(is_char_allowed(c))	{
+				word.append(1, std::tolower(c));
+			}
+			else	{
+				if(!word.empty())	{
+					++wc[word];
+				}
+				word.clear();
+			}
+			prev_c	= c;
+		}
+		if(!word.empty())	{
+			++wc[word];
+		}
+
+		for(auto& w : wc)	{
+			std::cout << w.first << ": " << w.second << std::endl;
+		}
+
 		return wc;
 	}
+
 }
