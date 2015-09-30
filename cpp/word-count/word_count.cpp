@@ -30,11 +30,12 @@ namespace word_count	{
 		dict_t wc;
 		std::string word("");
 		std::array<char, 3> apos_ctx{ NULL_CHAR, APOS_CHAR, NULL_CHAR };
-		auto prev_c	= NULL_CHAR;
+		auto prev_c	        = NULL_CHAR;
 		bool in_apos_ctx	= false;
 		bool is_start_quote	= false;
 
 		for(auto c : str)	{
+
 			if(in_apos_ctx)	{
 				apos_ctx[2]	= c;
 				if(is_apostrophes_allowed(apos_ctx))	{
@@ -42,23 +43,32 @@ namespace word_count	{
 				}
 				in_apos_ctx	= false;
 			}
-			else if(c == APOS_CHAR)	{
+			
+            else if(c == APOS_CHAR)	{
+
                 if(is_start_quote)  {
                     ;//Ignore char as quote ends
                     is_start_quote  = false;
                 }
+                
                 else if(std::isalpha(prev_c))  {
-                    apos_ctx[0]	= prev_c;
+                    apos_ctx[0]	= prev_c;//Start building the context for apostrophes
                     in_apos_ctx	= true;
                 }
+                
                 else    {
+                    assert(!std::isalpha(prev_c));
                     is_start_quote  = true;
                 }
 			}
-			else if(is_char_allowed(c))	{
+			
+            else if(is_char_allowed(c))	{
+                //Valid char, continue building current word
 				word.append(1, std::tolower(c));
 			}
-			else	{
+			
+            else	{
+                //We hit a space or some non-alphanumeric char that might mean the formation of a complete word
 				if(!word.empty())	{
 					++wc[word];
 				}
@@ -67,6 +77,7 @@ namespace word_count	{
 			prev_c	= c;
 		}
 		if(!word.empty())	{
+            // Grab the last word which ended with a valid aplhanumeric char
 			++wc[word];
 		}
 
