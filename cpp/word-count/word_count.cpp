@@ -27,6 +27,7 @@ namespace word_count	{
 	}
 
 	const dict_t words(const std::string& str)	{
+        std::cout << "\nRunning " << str << std::endl;
 		dict_t wc;
 		std::string word("");
 
@@ -47,15 +48,15 @@ namespace word_count	{
 			}
 			
             else if(c == APOS_CHAR)	{
-
-                if(is_apos_quote)  {
-                    ;//Ignore char as quote ends
-                    is_apos_quote  = false;//Reset flag
-                }
                 
-                else if(std::isalpha(prev_c))  {
+                if(std::isalpha(prev_c))  {
                     apos_ctx[0]	= prev_c;//Start building the context for apostrophes
                     consider_post_apos	= true;
+                }
+                
+                else if(is_apos_quote)  {
+                    ;//Ignore char as quote ends
+                    is_apos_quote  = false;//Reset flag
                 }
                 
                 else    {
@@ -81,6 +82,10 @@ namespace word_count	{
 		if(!word.empty())	{
             // Grab the last word which ended with a valid aplhanumeric char
 			++wc[word];
+		}
+        
+        for(auto& w : wc)	{
+			std::cout << w.first << ": " << w.second << std::endl;
 		}
 
 		return wc;
