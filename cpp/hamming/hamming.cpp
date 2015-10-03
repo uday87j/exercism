@@ -11,13 +11,12 @@ namespace hamming	{
 		if(s1.size() != s2.size())	{
 			throw std::domain_error("Uneven Strings");
 		}
-		auto len	= s1.size();
-		auto c1		= s1.begin();
-		auto c2		= s2.begin();
+		auto c1_itr	= s1.begin();
 		auto diff	= 0;
-		for(auto i = 0; i < len; ++i, ++c1, ++c2)	{
-			if(*c1 != *c2)
+		for(auto& c2 : s2)	{
+			if(*c1_itr != c2)
 				++diff;
+			++c1_itr;
 		}
 		return diff;
 	}
