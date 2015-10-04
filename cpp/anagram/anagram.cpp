@@ -4,6 +4,7 @@
 #include <cctype>
 #include <algorithm>
 #include <functional>
+#include <iostream>
 
 
 using namespace std;
@@ -70,6 +71,7 @@ namespace anagram	{
 		str_vec_t anagrams;
 
 		for(auto& s : vec)	{
+			cout << s << endl;
 
 			auto is_anagram	= true;
 			m_char_count_vec.clear();
@@ -77,19 +79,25 @@ namespace anagram	{
 			// For each candidate string,
 			// check if it has same char as our m_str
 			for(auto& c : s)	{
+				cout << "Checking char: " << c << endl;
 				auto itr	= m_char_map.find(c);
 				if(itr == m_char_map.end())	{
 					is_anagram	= false;
 					break;
 				}
-
-				// Keep count of this char
-				// Maintain 1-to-1 order w.r.t map's key
-				// std::map guarantees to store char in alphabetial (sorted) order
-				//TODO: Uncomment: ++m_char_count_vec[itr - m_char_map.begin()];
+				else	{
+					// Keep count of this char
+					// Maintain 1-to-1 order w.r.t map's key
+					// std::map guarantees to store char in alphabetial (sorted) order
+					//WARNING: This code will not run & will hang!!!
+					//auto index	= std::distance(itr, m_char_map.begin());
+					//++m_char_count_vec[index];
+				}
 			}
+			cout << "Done checking letters\n";
 
 			if(is_anagram)	{	// This is still a potential anagram
+				cout << s << " might be anagram" << endl;
 
 				//Check if this string is indeed an anagram
 				//This string has exactly the same letters as our word
@@ -107,11 +115,14 @@ namespace anagram	{
 				}
 
 				if(is_anagram)	{
+					cout << s << " is anagram" << endl;
 					anagrams.push_back(s);
 				}
 			}
+			cout << "End loop\n";
 		}
 
+		cout << "Return\n";
 		return anagrams;
 	}
 	
