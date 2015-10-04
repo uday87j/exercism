@@ -6,7 +6,7 @@
 namespace bob	{
 
 	bool is_yelling_string(const std::string& input)	{
-		auto bool is_yell	= false;
+		auto is_yell	= false;
 		for(auto& c : input)	{
 			if(std::isalpha(c))	{
 				if(0 == std::isupper(c))	{
