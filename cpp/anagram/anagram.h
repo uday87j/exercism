@@ -29,10 +29,11 @@ namespace anagram	{
 
 		std::string m_str;
 		cmap_t m_char_map;
-		std::vector<std::uint32_t> m_char_count_vec;
 
 	};
 	
 	extern anagram_t anagram(const std::string& str);
+
+    extern void fill_char_map(const std::string& str, cmap_t& cmap);
 }
 #endif
