@@ -153,7 +153,7 @@ namespace food_chain	{
 				break;
 
 			case 8:
-				return start_str("horse") + lyrics(v);
+				return start_str(lives[v - 1]) + lyrics(v);
 				break;
 
 			default:
