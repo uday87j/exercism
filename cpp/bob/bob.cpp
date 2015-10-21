@@ -7,15 +7,13 @@ namespace bob	{
 
 	bool is_yelling_string(const std::string& input)	{
 		auto is_yell	= false;
-		for(auto& c : input)	{
-			if(std::isalpha(c))	{
-				if(0 == std::isupper(c))	{
-					return false;
-				}
-				is_yell	= true;
-			}
-		}
-		return is_yell;;
+		return std::none_of(begin(input), end(input),
+                [](const char c)    {
+                    return (std::isalpha(c) && std::islower(c));
+                }) &&
+                std::any_of(begin(input), end(input), [](const char c)  {
+                    return std::isalpha(c);
+                });
 	}
 
 	bool is_question_string(const std::string& input)	{
@@ -25,24 +23,18 @@ namespace bob	{
 		}
 		auto is_ques	= true;
 		// The only other character after '?' allowed is ' '
-		std::for_each(input.begin() + pos + 1, input.end(), [&](const char c)	{
-			if(!std::isspace(c))	{
-				is_ques	= false;
-			}
-		});
-		return is_ques;
+		return std::all_of(std::next(begin(input), pos + 1), end(input),
+                [](const char c)    {
+                    return std::isspace(c);
+                });
 	}
 
 	bool is_nothing_string(const std::string& input)	{
-		if(input.empty())	{
-			return true;
-		}
-		for(auto& c : input)	{
-			if(!std::isspace(c))	{
-				return false;
-			}
-		}
-		return true;
+	    return input.empty() ||
+	        std::all_of(begin(input), end(input),
+                    [](const char c)    {
+                        return std::isspace(c);
+                    });
 	}
 
 	std::string hey(const std::string& input)	{
